@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos Próximos da Validade</title>
+    <style>
+        /* Estilo para exibir o histórico de produtos */
+        .historico-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            position: relative;
+        }
+
+        /* Estilo para os botões de excluir */
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .action-btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Barra de Pesquisa */
+        .search-container {
+            text-align: right;
+            margin: 20px;
+        }
+
+        .search-container input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .search-container button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Barra de Pesquisa -->
+<div class="search-container">
+    <form action="/buscar_fornecedor" method="GET">
+        <input type="text" id="fornecedor" name="fornecedor" placeholder="Buscar Fornecedor" required>
+        <button type="submit">🔍</button>
+    </form>
+</div>
+
+<div class="historico-container">
+    <h2>Produtos Próximos da Validade</h2>
+    <div class="scroll-container">
+        {% if produtos %}
+            <table>
+                <tr>
+                    <th>Nome</th>
+                    <th>Código de Barras</th>
+                    <th>Data de Fabricação</th>
+                    <th>Fornecedor</th>
+                    <th>Data de Validade</th>
+                    <th>Ações</th>
+                </tr>
+                {% for produto in produtos %}
+                    <tr>
+                        <td>{{ produto.nome }}</td>
+                        <td>{{ produto.codigo_barras }}</td>
+                        <td>{{ produto.data_fabricacao }}</td>
+                        <td>{{ produto.fornecedor }}</td>
+                        <td>{{ produto.data_validade }}</td>
+                        <td class="actions">
+                            <!-- Botão para excluir -->
+                            <form action="/excluir_produto" method="POST" style="display:inline;">
+                                <input type="hidden" name="codigo_barras" value="{{ produto.codigo_barras }}">
+                                <button type="submit" class="action-btn" title="Excluir">
+                                    <img src="/static/icons/delete-icon.png" alt="Excluir">
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>Nenhum produto próximo da validade.</p>
+        {% endif %}
+    </div>
+</div>
+
+<br>
+<a href="{{ url_for('index') }}">Voltar</a>
+
+</body>
+</html>
